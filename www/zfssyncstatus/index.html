@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ZFS Sync Status</title>
+    <!--<title>SB Admin 2 - Bootstrap Admin Theme</title>-->
+    <!-- by https://github.com/IronSummitMedia/startbootstrap-sb-admin-2 -->
+
+    <!-- Bootstrap Core CSS -->
+    <link href="./bootstrap.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="./metisMenu.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="./timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./sb-admin-2.css" rel="stylesheet">
+    <link href="./css.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="./morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="./font-awesome.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">ZFS Sync Status</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <i class="pull-left fa fa-flash fa-fw"></i> RAM
+                                        <span class="huge pull-right" id="ramtxt"></span>
+                                        <div class="clearboth"></div>
+                                    </p>
+                                    <div class="progress progress-striped progress-outline" id="rambar"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#pool">
+                                <div>
+                                    <p>
+                                        <i class="pull-left fa fa-rocket fa-fw"></i> OS
+                                        <span class="huge pull-right" id="pooltxt"></span>
+                                        <div class="clearboth"></div>
+                                    </p>
+                                    <div class="progress progress-striped progress-outline" id="poolbar"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tank">
+                                <div>
+                                    <p>
+                                        <i class="pull-left fa fa-database fa-fw"></i> Data
+                                        <span class="huge pull-right" id="tanktxt"></span>
+                                        <div class="clearboth"></div>
+                                    </p>
+                                    <div class="progress progress-striped progress-outline" id="tankbar"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#logs"><i class="fa fa-archive fa-fw"></i> Logs</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p id="dashboard"></p>
+                    <!-- date -u +%y%m%d-%H%M%S -->
+                    <p>Refresh every <input id="refresh_time_seconds" class="shortinput" value="3600"/> seconds. Snapshot names are timestamps in UTC in the format YearMonthDay-HourMinuteSecond.</p>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row" id="coloricontxt"></div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-6" id="pool">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-hdd-o fa-fw"></i> Operating System ZFS Pool
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body preauto" id="zpoolstatuspool"></div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6" id="tank">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-hdd-o fa-fw"></i> Data ZFS Pool
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body preauto" id="zpoolstatustank"></div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" id="logs"> Sync Logs</h1>
+                    <p>The following are log files, so the newest information will be at the bottom of each log.</p>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="page-header">Today</h2>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-clock-o fa-fw"></i> Progress Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame1"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-8 -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-trash fa-fw"></i> Prune Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame2"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="page-header">Yesterday</h2>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-clock-o fa-fw"></i> Progress Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame3"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-8 -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-trash fa-fw"></i> Prune Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame4"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="page-header">2 Days Ago</h2>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-clock-o fa-fw"></i> Progress Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame5"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-8 -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <i class="pull-left fa fa-trash fa-fw"></i> Prune Log
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body logfile" id="frame6"></div>
+                        <!-- /.panel-body2 -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <footer class="footer">
+                    <p class="text-muted">
+                        <a href="https://github.com/IronSummitMedia/startbootstrap-sb-admin-2">SB Admin 2 - Bootstrap Admin Theme</a> by Iron Summit Media Strategies
+                    </p>
+                </footer>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="./jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./bootstrap.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="./metisMenu.js"></script>
+
+    <!-- Flot Charts JavaScript -->
+    <script src="./excanvas.js"></script>
+    <script src="./jquery.flot.js"></script>
+    <script src="./jquery.flot.pie.js"></script>
+    <script src="./jquery.flot.resize.js"></script>
+    <script src="./jquery.flot.time.js"></script>
+    <script src="./jquery.flot.tooltip.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="./raphael.js"></script>
+    <script src="./morris.js"></script>
+    <!--<script src="./morris-data.js"></script>-->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="./sb-admin-2.js"></script>
+    <script src="./js.js"></script>
+
+</body>
+
+</html>

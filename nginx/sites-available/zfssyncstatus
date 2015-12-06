@@ -1,0 +1,20 @@
+server {
+    listen 80 default_server;
+    server_name localhost.localdomain;
+    access_log  /var/log/nginx-access.log realip;
+    error_log   /var/log/nginx-error.log;
+    root /usr/local/www/zfssyncstatus;
+    location =/json-datasets.js  { alias /usr/local/www/data/json-datasets.js ; }
+    location =/json-snapshots.js { alias /usr/local/www/data/json-snapshots.js; }
+    location =/json-ramusage.js  { alias /usr/local/www/data/json-ramusage.js ; }
+    location =/json-poolusage.js { alias /usr/local/www/data/json-poolusage.js; }
+    location =/json-tankusage.js { alias /usr/local/www/data/json-tankusage.js; }
+    location =/poolstatus.txt { alias /usr/local/www/data/poolstatus.txt; }
+    location =/tankstatus.txt { alias /usr/local/www/data/tankstatus.txt; }
+    location =/sync.txt   { alias /var/hostlog/zfs-sync-xz-pull-all.log  ; }
+    location =/sync.0.txt { alias /var/hostlog/zfs-sync-xz-pull-all.log.0; }
+    location =/sync.1.txt { alias /var/hostlog/zfs-sync-xz-pull-all.log.1; }
+    location =/prune.txt   { alias /var/hostlog/zsnaprune-all.log  ; }
+    location =/prune.0.txt { alias /var/hostlog/zsnaprune-all.log.0; }
+    location =/prune.1.txt { alias /var/hostlog/zsnaprune-all.log.1; }
+}

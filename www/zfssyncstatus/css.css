@@ -1,0 +1,36 @@
+.logfile {
+    max-height: 400px;
+    white-space: pre;
+    overflow: auto;
+    font-family: monospace;
+}
+
+.dataset-box {
+    min-height: 182px;
+}
+
+.footer {
+    text-align: right;
+}
+
+.preauto {
+    white-space: pre;
+    overflow: auto;
+}
+
+.clearboth {
+    clear: both;
+}
+
+.progress-outline {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.shortinput {
+    width: 50px;
+}
